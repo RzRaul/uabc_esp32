@@ -21,6 +21,9 @@
 *.a
 *.la
 *.lo
+build/
+.devcontainer/
+.vscode/
 
 # Shared objects (inc. Windows DLLs)
 *.dll
