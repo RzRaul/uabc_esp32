@@ -56,7 +56,7 @@ void IRAM_ATTR gpio_isr_handler(void* arg){
 
 void setupInterrupts(void){
     gpio_config_t io_conf;
-    io_conf.intr_type = GPIO_INTR_ANYEDGE;
+    io_conf.intr_type = GPIO_INTR_LOW_LEVEL;
     io_conf.pin_bit_mask = (1ULL<<SWITCH_1) | (1ULL<<SWITCH_2) | (1ULL<<SWITCH_3) | (1ULL<<SWITCH_4) | (1ULL<<SWITCH_5);
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
@@ -68,7 +68,6 @@ void setupInterrupts(void){
     gpio_isr_handler_add(SWITCH_3, gpio_isr_handler, (void*) SWITCH_3);
     gpio_isr_handler_add(SWITCH_4, gpio_isr_handler, (void*) SWITCH_4);
     gpio_isr_handler_add(SWITCH_5, gpio_isr_handler, (void*) SWITCH_5);
-    gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 }
 
 int getNewDelay(){
