@@ -1,6 +1,6 @@
 #include <inttypes.h>
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "freertos/task.h"  
 #include "freertos/queue.h"
 #include "driver/gpio.h"
 
@@ -14,11 +14,11 @@
 #define SWITCH_QUANTITY 5
 
 
-#define LED_1 GPIO_NUM_23
-#define LED_2 GPIO_NUM_22
-#define LED_3 GPIO_NUM_21
-#define LED_4 GPIO_NUM_19
-#define LED_5 GPIO_NUM_18
+#define LED_1 GPIO_NUM_15
+#define LED_2 GPIO_NUM_18
+#define LED_3 GPIO_NUM_19
+#define LED_4 GPIO_NUM_21
+#define LED_5 GPIO_NUM_22
 #define LED_QUANTITY 5
 
 static char tag[] = "adc1";
