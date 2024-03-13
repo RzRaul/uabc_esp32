@@ -20,3 +20,6 @@ void setupLed(int pin);
 void turnOnLed(int pin) ;
 void turnOffLed(int pin) ;
 void updateLeds(int value, int *leds, int length) ;
+void pushIntoQ(int *q, int length, int value) ;
+static bool example_adc_calibration_init(adc_unit_t unit, adc_channel_t channel, adc_atten_t atten, adc_cali_handle_t *out_handle);
+static void example_adc_calibration_deinit(adc_cali_handle_t handle);

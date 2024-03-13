@@ -1,7 +1,12 @@
 #include <driver/gpio.h>
 #include <inttypes.h>
 #include "esp_adc/adc_oneshot.h"
+#include "esp_adc/adc_cali.h"
+#include "esp_adc/adc_cali_scheme.h"
 #include "io_handler.h"
+#include "esp_log.h"
+
+static const char *TAG = "main";
 
 void setupPushButton(int pin, void *callback(void *)) {
     gpio_config_t io_conf;
@@ -15,6 +20,42 @@ void setupPushButton(int pin, void *callback(void *)) {
     gpio_isr_handler_add(pin, callback, (void *) pin);
 }
 
+static bool adc_calibration_init(adc_unit_t unit, adc_channel_t channel, adc_atten_t atten, adc_cali_handle_t *out_handle)
+{
+    adc_cali_handle_t handle = NULL;
+    esp_err_t ret = ESP_FAIL;
+    bool calibrated = false;
+
+    if (!calibrated) {
+        adc_cali_line_fitting_config_t cali_config = {
+            .unit_id = unit,
+            .atten = atten,
+            .bitwidth = ADC_BITWIDTH_DEFAULT,
+        };
+        ret = adc_cali_create_scheme_line_fitting(&cali_config, &handle);
+        if (ret == ESP_OK) {
+            calibrated = true;
+        }
+    }
+
+    *out_handle = handle;
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Calibration Success");
+    } else if (ret == ESP_ERR_NOT_SUPPORTED || !calibrated) {
+        ESP_LOGW(TAG, "eFuse not burnt, skip software calibration");
+    } else {
+        ESP_LOGE(TAG, "Invalid arg or no memory");
+    }
+
+    return calibrated;
+}
+
+void pushIntoQ(int *q, int length, int value) {
+    for (int i = length - 1; i > 0; i--) {
+        q[i] = q[i - 1];
+    }
+    q[0] = value;
+}
 
 void setupADC(t_adc_config* config) {
     ESP_ERROR_CHECK(adc_oneshot_new_unit(config->unit_config, config->handle));

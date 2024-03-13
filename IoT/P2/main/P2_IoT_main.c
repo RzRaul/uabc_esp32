@@ -12,37 +12,41 @@
 #include <string.h>
 #include "driver/gpio.h"
 #include <stdio.h>
-#include "driver/adc.h"
+#include "esp_adc/adc_oneshot.h"
 #include "io_handler.h"
+//includes the i2c driver
+#include "driver/i2c.h"
 
 #define HISTORY_LEN 10
 #define SAMPLING_AVG 5
-
-
+#define MY_ADC_CHANNEL ADC_CHANNEL_0
+#define MY_ADC_ATTEN ADC_ATTEN_DB_0
+#define MY_ADC_WIDTH ADC_BITWIDTH_10
 
 int8_t adc_r_value = 0;
 int8_t adc_g_value = 0;
 int8_t adc_b_value = 0;
 
-// Creates a typedef struct to store the measures
-typedef struct
-{
-    int measures[HISTORY_LEN];
-    int index;
-} measures_t;
+int8_t adc_r_values[HISTORY_LEN];
 
+adc_oneshot_unit_handle_t adc_one_shot;
 
-//For debugging it creates 10 measures of the same value
-void createMeasures(int *measures, int value)
-{
-    for (int i = 0; i < HISTORY_LEN; i++)
-    {
-        measures[i] = value;
-    }
-}
 
 
 static const char *TAG = "main";
+adc_oneshot_unit_handle_t adc1_handle;
+t_adc_config adc_config = {
+    .quant = 2,
+    .channels = (adc_channel_t[]){MY_ADC_CHANNEL, ADC_CHANNEL_3},
+    .atten = (adc_atten_t[]){MY_ADC_ATTEN, MY_ADC_ATTEN},
+    .bitwidth = (adc_bitwidth_t[]){MY_ADC_WIDTH, MY_ADC_WIDTH},
+    .unit_config = &(adc_oneshot_unit_init_cfg_t){
+        .unit_id = ADC_UNIT_1,
+    },
+    .handle = &adc1_handle,
+};
+
+
 
 /* An HTTP GET handler */
 static esp_err_t root_get_handler(httpd_req_t *req)
@@ -54,10 +58,12 @@ static esp_err_t root_get_handler(httpd_req_t *req)
     memcpy(viewHtml, view_start, view_len);
     ESP_LOGI(TAG, "URI: %s", req->uri);
 
-    adc_r_value = adc1_get_raw(ADC1_CHANNEL_6)/41;
-    adc_g_value = adc1_get_raw(ADC1_CHANNEL_3)/41;
-    adc_b_value = adc1_get_raw(ADC1_CHANNEL_0)/41;
-
+    adc_g_value = readAvgADC(adc1_handle, MY_ADC_CHANNEL, SAMPLING_AVG);
+    // adc_b_value = readAvgADC(adc1_handle, ADC_CHANNEL_3, SAMPLING_AVG);
+    //prints ESP_LOG both values
+    ESP_LOGI(TAG, "ADC1_CHANNEL_0: %i", adc_g_value);
+    // ESP_LOGI(TAG, "ADC1_CHANNEL_3: %i", adc_b_value);
+    
     char *viewHtmlUpdated;
     int formattedStrResult = asprintf(&viewHtmlUpdated, viewHtml, adc_r_value,adc_r_value,adc_g_value,adc_g_value,adc_b_value,adc_b_value);
     
@@ -97,6 +103,11 @@ static const httpd_uri_t root = {
     .method = HTTP_GET,
     .handler = root_get_handler};
 
+static const httpd_uri_t history = {
+    .uri = "/history",
+    .method = HTTP_GET,
+    .handler = root_get_handler};
+
 static httpd_handle_t start_webserver(void)
 {
     httpd_handle_t server = NULL;
@@ -116,6 +127,7 @@ static httpd_handle_t start_webserver(void)
     // Set URI handlers
     ESP_LOGI(TAG, "Registering URI handlers");
     httpd_register_uri_handler(server, &root);
+    httpd_register_uri_handler(server, &history);
     return server;
 }
 
@@ -147,21 +159,10 @@ static void connect_handler(void *arg, esp_event_base_t event_base,
 }
 
 
-
-static esp_err_t set_adc(void)
-{
-    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_11);
-    adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_11);
-    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_11);
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    return ESP_OK;
-}
-
-
 void app_main(void)
 {   
     static httpd_handle_t server = NULL;
-    ESP_ERROR_CHECK(set_adc());
+    setupADC(&adc_config);
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
