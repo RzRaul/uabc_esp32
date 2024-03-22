@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Misc/proyecto.md",
+                "file": "Misc/Installs.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Misc/proyecto.md",
+                "file": "Misc/Installs.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Misc/proyecto.md",
+                "file": "Misc/Installs.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Misc/proyecto.md"
+                "file": "Misc/Installs.md"
               }
             }
           }
@@ -147,5 +147,11 @@
     }
   },
   "active": "ec4b941cdb317496",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "Misc/QoS.md",
+    "Misc/I2C.md",
+    "Misc/proyecto.md",
+    "Misc/Welcome.md",
+    "MQTT.md"
+  ]
 }
