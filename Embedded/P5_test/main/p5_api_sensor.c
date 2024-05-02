@@ -1,16 +1,16 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
-#include "driver/i2c.h"
+#include "driver/spi_master.h"
 #include "bme280.h"
 #include "bme280_defs.h"
 
 
-#define I2C_MASTER_SCL_IO 22
-#define I2C_MASTER_SDA_IO 21
-#define I2C_MASTER_NUM I2C_NUM_0
-#define I2C_MASTER_FREQ_HZ 1000000
-#define BME280_ADDR 0x77     
+#define i2c_MASTER_SCL_IO 22
+#define i2c_MASTER_SDA_IO 21
+#define i2c_MASTER_NUM i2c_NUM_0
+#define i2c_MASTER_FREQ_HZ 1000000
+#define BME280_ADDR 0x80     
 #define BME280_ADDR_ID 0xD0               
 #define SAMPLE_COUNT  UINT8_C(5)
 
@@ -76,34 +76,34 @@ void app_main() {
 
 static esp_err_t i2c_master_init() {
     i2c_config_t conf;
-    conf.mode = I2C_MODE_MASTER;
-    conf.sda_io_num = I2C_MASTER_SDA_IO;
+    conf.mode = i2c_MODE_MASTER;
+    conf.sda_io_num = i2c_MASTER_SDA_IO;
     conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
-    conf.scl_io_num = I2C_MASTER_SCL_IO;
+    conf.scl_io_num = i2c_MASTER_SCL_IO;
     conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
-    conf.master.clk_speed = I2C_MASTER_FREQ_HZ;
-    esp_err_t err = i2c_param_config(I2C_MASTER_NUM, &conf);
+    conf.master.clk_speed = i2c_MASTER_FREQ_HZ;
+    esp_err_t err = i2c_param_config(i2c_MASTER_NUM, &conf);
     if (err != ESP_OK) {
         return err;
     }
-    return i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);
+    return i2c_driver_install(i2c_MASTER_NUM, conf.mode, 0, 0, 0);
 }
 
 static esp_err_t i2c_master_read_register(uint8_t reg, uint8_t *data, size_t len) {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
-    i2c_master_write_byte(cmd, BME280_ADDR << 1 | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(cmd, BME280_ADDR << 1 | i2c_MASTER_WRITE, true);
     i2c_master_write_byte(cmd, reg, true);
 
     i2c_master_start(cmd);
-    i2c_master_write_byte(cmd, BME280_ADDR << 1 | I2C_MASTER_READ, true);
+    i2c_master_write_byte(cmd, BME280_ADDR << 1 | i2c_MASTER_READ, true);
     if (len > 1) {
-        i2c_master_read(cmd, data, len - 1, I2C_MASTER_ACK);
+        i2c_master_read(cmd, data, len - 1, i2c_MASTER_ACK);
     }
-    i2c_master_read_byte(cmd, data + len - 1, I2C_MASTER_NACK); // Read the last byte with NACK
+    i2c_master_read_byte(cmd, data + len - 1, i2c_MASTER_NACK); // Read the last byte with NACK
     // Stop
     i2c_master_stop(cmd);
-    esp_err_t ret = i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000 / portTICK_PERIOD_MS);
+    esp_err_t ret = i2c_master_cmd_begin(i2c_MASTER_NUM, cmd, 1000 / portTICK_PERIOD_MS);
     i2c_cmd_link_delete(cmd);
     return ret;
 }
@@ -112,13 +112,13 @@ static esp_err_t i2c_master_write_register(uint8_t reg_addr, const uint8_t *data
                                                     void *intf_ptr) {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
-    i2c_master_write_byte(cmd, BME280_ADDR << 1 | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(cmd, BME280_ADDR << 1 | i2c_MASTER_WRITE, true);
     i2c_master_write_byte(cmd, reg_addr, true);
     i2c_master_write(cmd, data,len, true);
 
 
     i2c_master_stop(cmd);
-    esp_err_t ret = i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000 / portTICK_PERIOD_MS);
+    esp_err_t ret = i2c_master_cmd_begin(i2c_MASTER_NUM, cmd, 1000 / portTICK_PERIOD_MS);
     i2c_cmd_link_delete(cmd);
     return ret;
 }
@@ -132,7 +132,7 @@ void bme280_initialize(){
     rslt = BME280_OK;
     
     dev.chip_id = BME280_ADDR;
-    dev.intf = BME280_I2C_INTF;
+    dev.intf = BME280_i2c_INTF;
     dev.read = (bme280_read_fptr_t)i2c_master_read_register;
     dev.write = (bme280_write_fptr_t)i2c_master_write_register;
     dev.delay_us = (bme280_delay_us_fptr_t)bme280_delay_us;
@@ -161,4 +161,60 @@ void printRegs(){
     //Reads HUMIDITY_LOW and HUMIDITY_HIGH registers
     rslt = i2c_master_read_register(0xFD, readings, 2);
     ESP_LOGI(TAG, "\n\nHUMIDITY_LOW: 0x%x\nHUMIDITY_HIGH: 0x%x\n", readings[0], readings[1]);
+}
+
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+#include "driver/spi_master.h"
+#include "bme280.h"
+
+#define SPI_MOSI_PIN 23
+#define SPI_MISO_PIN 19
+#define SPI_SCLK_PIN 18
+#define SPI_CS_PIN   5
+
+spi_device_handle_t spi;
+
+void bme280_init() {
+    bme280_params_t bme280_params = {
+        .spi_handle = spi,
+        .spi_device_address = SPI_CS_PIN,
+    };
+    bme280_init(&bme280_params);
+}
+
+void bme280_task(void *pvParameters) {
+    while(1) {
+        float temperature, humidity, pressure;
+        bme280_read_float_data(&temperature, &humidity, &pressure);
+        printf("Temperature: %.2f C, Humidity: %.2f %%RH, Pressure: %.2f hPa\n", temperature, humidity, pressure);
+        vTaskDelay(pdMS_TO_TICKS(2000)); // 2-second delay
+    }
+}
+
+void app_main() {
+    spi_bus_config_t bus_config = {
+        .mosi_io_num = SPI_MOSI_PIN,
+        .miso_io_num = SPI_MISO_PIN,
+        .sclk_io_num = SPI_SCLK_PIN,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = 0,
+    };
+
+    spi_device_interface_config_t dev_config = {
+        .mode = 0,  // SPI mode 0
+        .clock_speed_hz = 1000000,  // 1 MHz clock
+        .spics_io_num = SPI_CS_PIN,
+        .queue_size = 1,
+    };
+
+    spi_bus_initialize(HSPI_HOST, &bus_config, 1);
+    spi_bus_add_device(HSPI_HOST, &dev_config, &spi);
+
+    bme280_init();
+
+    xTaskCreate(bme280_task, "bme280_task", 2048, NULL, 5, NULL);
 }

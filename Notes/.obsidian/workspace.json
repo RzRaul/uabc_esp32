@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "thoughts.md",
+                "file": "Misc/Welcome.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "thoughts.md",
+                "file": "Misc/Welcome.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "thoughts.md",
+                "file": "Misc/Welcome.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "thoughts.md"
+                "file": "Misc/Welcome.md"
               }
             }
           }
@@ -161,8 +161,8 @@
   },
   "active": "4f6e86a17e8e8f7f",
   "lastOpenFiles": [
-    "Misc/Installs.md",
     "thoughts.md",
+    "Misc/Installs.md",
     "Misc/QoS.md",
     "Misc/I2C.md",
     "Misc/proyecto.md",
