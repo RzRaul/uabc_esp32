@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Misc/Welcome.md",
+                "file": "IoT.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Misc/Welcome.md",
+                "file": "IoT.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Misc/Welcome.md",
+                "file": "IoT.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Misc/Welcome.md"
+                "file": "IoT.md"
               }
             }
           }
@@ -161,12 +161,13 @@
   },
   "active": "4f6e86a17e8e8f7f",
   "lastOpenFiles": [
+    "MQTT.md",
+    "Learning.md",
+    "Misc/Welcome.md",
     "thoughts.md",
     "Misc/Installs.md",
     "Misc/QoS.md",
     "Misc/I2C.md",
-    "Misc/proyecto.md",
-    "Misc/Welcome.md",
-    "MQTT.md"
+    "Misc/proyecto.md"
   ]
 }

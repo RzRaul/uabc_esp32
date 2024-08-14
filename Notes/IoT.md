@@ -12,4 +12,55 @@ cada 1 o 2 segundos se monitorea un sensor y si el valor cumple una condición e
 
 La opción 2 es con Telegram bot que es un servicio de mensajería que permite a los usuarios enviar y recibir mensajes de texto, fotos, videos, archivos y stickers. Los bots de Telegram son aplicaciones de terceros que se pueden utilizar para automatizar tareas y enviar notificaciones. 
 
-  
+Internet of things
+Cosas en Iot
+Conectividad
+- USB Host
+- RJ45 Ethernet
+Procesador
+- CPU
+Interfaces de memoria
+- NAND/NOR
+- DDR1/2/3
+Gráficos
+- GPU
+Interfaces de audio/video
+- HDMI
+- 3.5 mm audio
+- RCA Video
+Interfaces de Almacenamiento
+- SD
+- MMC
+- SDIO
+
+Interfaces de entrada y salida a sensores
+- UART
+- SPI
+- I2C
+- CAN
+
+Protocolos de IoT
+
+- Capa de aplicación
+	- HTTPS
+	- CoAP
+	- WebSockets
+	- MQTT
+	- XMPP
+	- DDS
+	- AMQP
+- Capa de Transporte
+	- TCP
+	- UDP
+- Capa de Red
+	- IPV4
+	- IPV6
+	- 6LoWPAN
+- Capa de Enlace
+	- 802.3 Ethernet
+	- 802.11 WiFi
+	- 802.16 WiMax
+	- 802.15.4 LR-WPAN
+	- 2G/3G/LTE Cellular
+- 
+
