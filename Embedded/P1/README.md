@@ -1,93 +1,53 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-S2 | ESP32-S3 |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- |
+| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-P4 | ESP32-S2 | ESP32-S3 | Linux |
+| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | ----- |
 
-# Example: GPIO
+# Hello World Example
+
+Starts a FreeRTOS task to print "Hello World".
 
 (See the README.md file in the upper level 'examples' directory for more information about examples.)
 
-This test code shows how to configure GPIO and how to use it with interruption.
-
-## GPIO functions:
-
-| GPIO                         | Direction | Configuration                                          |
-| ---------------------------- | --------- | ------------------------------------------------------ |
-| CONFIG_GPIO_OUTPUT_0         | output    |                                                        |
-| CONFIG_GPIO_OUTPUT_1         | output    |                                                        |
-| CONFIG_GPIO_INPUT_0          | input     | pulled up, interrupt from rising edge and falling edge |
-| CONFIG_GPIO_INPUT_1          | input     | pulled up, interrupt from rising edge                  |
-
-## Test:
- 1. Connect CONFIG_GPIO_OUTPUT_0 with CONFIG_GPIO_INPUT_0
- 2. Connect CONFIG_GPIO_OUTPUT_1 with CONFIG_GPIO_INPUT_1
- 3. Generate pulses on CONFIG_GPIO_OUTPUT_0/1, that triggers interrupt on CONFIG_GPIO_INPUT_0/1
-
- **Note:** The following pin assignments are used by default, you can change them by `idf.py menuconfig` > `Example Configuration`.
-
-|                        | CONFIG_GPIO_OUTPUT_0 | CONFIG_GPIO_OUTPUT_1 | CONFIG_GPIO_INPUT_0 | CONFIG_GPIO_INPUT_1 |
-| ---------------------- | -------------------- | -------------------- | ------------------- | ------------------- |
-| ESP32C2/ESP32H2        | 8                    | 9                    | 4                   | 5                   |
-| All other chips        | 18                   | 19                   | 4                   | 5                   |
-
 ## How to use example
 
-Before project configuration and build, be sure to set the correct chip target using `idf.py set-target <chip_name>`.
+Follow detailed instructions provided specifically for this example.
 
-### Hardware Required
+Select the instructions depending on Espressif chip installed on your development board:
 
-* A development board with any Espressif SoC (e.g., ESP32-DevKitC, ESP-WROVER-KIT, etc.)
-* A USB cable for Power supply and programming
-* Some jumper wires to connect GPIOs.
+- [ESP32 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html)
+- [ESP32-S2 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html)
 
-### Configure the project
 
-### Build and Flash
+## Example folder contents
 
-Build the project and flash it to the board, then run the monitor tool to view the serial output:
+The project **hello_world** contains one source file in C language [hello_world_main.c](main/hello_world_main.c). The file is located in folder [main](main).
 
-Run `idf.py -p PORT flash monitor` to build, flash and monitor the project.
+ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt` files that provide set of directives and instructions describing the project's source files and targets (executable, library, or both).
 
-(To exit the serial monitor, type ``Ctrl-]``.)
-
-See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
-
-## Example Output
-
-As you run the example, you will see the following log:
+Below is short explanation of remaining files in the project folder.
 
 ```
-I (317) gpio: GPIO[18]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pullup: 0| Pulldown: 0| Intr:0
-I (327) gpio: GPIO[19]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pullup: 0| Pulldown: 0| Intr:0
-I (337) gpio: GPIO[4]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:1
-I (347) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:1
-Minimum free heap size: 289892 bytes
-cnt: 0
-cnt: 1
-GPIO[4] intr, val: 1
-GPIO[5] intr, val: 1
-cnt: 2
-GPIO[4] intr, val: 0
-cnt: 3
-GPIO[4] intr, val: 1
-GPIO[5] intr, val: 1
-cnt: 4
-GPIO[4] intr, val: 0
-cnt: 5
-GPIO[4] intr, val: 1
-GPIO[5] intr, val: 1
-cnt: 6
-GPIO[4] intr, val: 0
-cnt: 7
-GPIO[4] intr, val: 1
-GPIO[5] intr, val: 1
-cnt: 8
-GPIO[4] intr, val: 0
-cnt: 9
-GPIO[4] intr, val: 1
-GPIO[5] intr, val: 1
-cnt: 10
-...
+├── CMakeLists.txt
+├── pytest_hello_world.py      Python script used for automated testing
+├── main
+│   ├── CMakeLists.txt
+│   └── hello_world_main.c
+└── README.md                  This is the file you are currently reading
 ```
+
+For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
 
 ## Troubleshooting
 
-For any technical queries, please open an [issue](https://github.com/espressif/esp-idf/issues) on GitHub. We will get back to you soon.
+* Program upload failure
+
+    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
+    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
+
+## Technical support and feedback
+
+Please use the following feedback channels:
+
+* For technical queries, go to the [esp32.com](https://esp32.com/) forum
+* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
+
+We will get back to you as soon as possible.
