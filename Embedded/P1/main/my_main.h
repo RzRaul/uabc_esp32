@@ -14,6 +14,7 @@
 #define LED_2 GPIO_NUM_3
 #define LED_3 GPIO_NUM_4
 #define LED_4 GPIO_NUM_5
+#define LED_RECEIPT GPIO_NUM_2
 #define DEBOUNCE_TIME 100
 #define PARKING_COST 15
 #define COINS 4
@@ -29,6 +30,12 @@ typedef enum {
   RETURNING_CHANGE,
   INVALID
 }machine_states_t;
+
+typedef enum {
+    BAR_LOW,
+    BAR_MID,
+    BAR_HIGH
+}bar_level_t;
 
 typedef struct {
     machine_states_t state;
